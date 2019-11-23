@@ -41,6 +41,7 @@ RDEPENDS_${PN}-extras = " \
         phosphor-dbus-monitor \
         phosphor-systemd-policy \
         dbus-broker \
+        phosphor-ipmi-flash \
         "
 
 SUMMARY_${PN}-extrasdev = "Development features"

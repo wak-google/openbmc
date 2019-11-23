@@ -1,0 +1,84 @@
+diff --git a/configure.ac b/configure.ac
+index 0b46133..435a16c 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -36,12 +36,6 @@ LT_LIB_DLLOAD
+ 
+ # Checks for libraries.
+ PKG_CHECK_MODULES([PHOSPHOR_LOGGING], [phosphor-logging])
+-PKG_CHECK_MODULES(
+-    [LIBIPMID],
+-    [libipmid],
+-    [],
+-    [AC_MSG_ERROR([Could not find libipmid...openbmc/phosphor-host-ipmid package required])]
+-)
+ PKG_CHECK_MODULES(
+     [IPMIBLOB],
+     [ipmiblob],
+diff --git a/ipmi.hpp b/ipmi.hpp
+index b79b1ee..db77836 100644
+--- a/ipmi.hpp
++++ b/ipmi.hpp
+@@ -2,7 +2,7 @@
+ 
+ #include "manager.hpp"
+ 
+-#include <ipmid/api.h>
++#include <host-ipmid/ipmid-api.h>
+ 
+ #include <blobs-ipmid/blobs.hpp>
+ #include <string>
+diff --git a/main.cpp b/main.cpp
+index bd071ae..c9b2004 100644
+--- a/main.cpp
++++ b/main.cpp
+@@ -21,12 +21,11 @@
+ #include "process.hpp"
+ #include "utils.hpp"
+ 
+-#include <ipmid/api.h>
++#include <host-ipmid/ipmid-api.h>
++#include <host-ipmid/iana.hpp>
++#include <host-ipmid/oemopenbmc.hpp>
+ 
+ #include <cstdio>
+-#include <ipmid/iana.hpp>
+-#include <ipmid/oemopenbmc.hpp>
+-#include <ipmid/oemrouter.hpp>
+ #include <memory>
+ #include <phosphor-logging/log.hpp>
+ 
+diff --git a/manager.hpp b/manager.hpp
+index e7a9a97..ec7dde2 100644
+--- a/manager.hpp
++++ b/manager.hpp
+@@ -3,7 +3,6 @@
+ #include <blobs-ipmid/blobs.hpp>
+ #include <chrono>
+ #include <ctime>
+-#include <ipmid/oemrouter.hpp>
+ #include <memory>
+ #include <string>
+ #include <unordered_map>
+@@ -20,7 +19,7 @@ const int crcSize = sizeof(uint16_t);
+ const int btReplyHdrLen = 5;
+ const int btTransportLength = 64;
+ const uint32_t maximumReadSize =
+-    btTransportLength - (btReplyHdrLen + oem::groupMagicSize + crcSize);
++    btTransportLength - (btReplyHdrLen + 3 + crcSize);
+ 
+ struct SessionInfo
+ {
+diff --git a/process.hpp b/process.hpp
+index cdd7f72..b4c2da4 100644
+--- a/process.hpp
++++ b/process.hpp
+@@ -2,7 +2,7 @@
+ 
+ #include "manager.hpp"
+ 
+-#include <ipmid/api.h>
++#include <host-ipmid/ipmid-api.h>
+ 
+ #include <functional>
+ 

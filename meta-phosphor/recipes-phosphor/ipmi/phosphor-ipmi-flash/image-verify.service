@@ -1,0 +1,10 @@
+[Unit]
+Before=phosphor-ipmi-flash-bmc-verify.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/mv /run/initramfs/bmc-image /run/initramfs/image-bmc
+ExecStart=/bin/sh -c 'echo -n success >/tmp/bmc.verify'
+
+[Install]
+RequiredBy=phosphor-ipmi-flash-bmc-verify.target
